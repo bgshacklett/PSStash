@@ -9,6 +9,10 @@ Sends the given input to the Windows clipboard.
 
 .DESCRIPTION
 
+The code in this function is exepted from the MIT license that
+the rest of the repository is licensed under due to lack of
+rights to relicense. 
+
 From Windows PowerShell Cookbook
 by Lee Holmes (http://www.leeholmes.com/guide)
 ISBN-13: 978-1449320683
