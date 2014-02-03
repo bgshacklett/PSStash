@@ -108,3 +108,46 @@ process
 }
 
 }
+
+
+function Get-RegisteredComObjects
+{
+
+<#
+
+.SYNOPSIS
+
+List all of the registered COM objects on the computer.
+
+.DESCRIPTION
+
+n/a
+
+.EXAMPLE
+
+$ Get-RegisteredComObjects
+
+PSChildName
+-----------
+Access.ACCDAExtension
+Access.ACCDCFile
+Access.ACCDEFile
+Access.ACCDTFile
+Access.ACCFTFile
+Access.ADEFile
+Access.Application
+...
+
+
+
+#>
+
+
+Get-ChildItem HKLM:\Software\Classes -ea 0 |
+? {
+	$_.PSChildName -match '^\w+\.\w+$' `
+	-and (Get-ItemProperty "$($_.PSPath)\CLSID" -ea 0) 
+} |
+ft PSChildName
+
+}
