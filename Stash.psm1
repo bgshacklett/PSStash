@@ -28,10 +28,10 @@ Resolve a SID
 param(
     ## The SID to resolve
     [Parameter(
-		Mandatory=$True,
-		ValueFromPipeline = $True,
-		ValueFromPipelineByPropertyName=$True)
-	]
+        Mandatory=$True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName=$True)
+    ]
     [string[]] $sids
 )
 
@@ -42,13 +42,13 @@ begin
 
 process
 {
-	Foreach ($sid in $sids)
-	{
-		$principal = 
-			New-Object System.Security.Principal.SecurityIdentifier($sid)
+    Foreach ($sid in $sids)
+    {
+        $principal = 
+            New-Object System.Security.Principal.SecurityIdentifier($sid)
 
-		($principal.Translate([System.Security.Principal.NTAccount]))
-	}
+        ($principal.Translate([System.Security.Principal.NTAccount]))
+    }
 }
 
 }
@@ -84,10 +84,10 @@ Resolve a SamAccountName
 param(
     ## The SamAccountNames to resolve
     [Parameter(
-		Mandatory=$True,
-		ValueFromPipeline = $True,
-		ValueFromPipelineByPropertyName=$True)
-	]
+        Mandatory=$True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName=$True)
+    ]
     [string[]] $samAccountNames
 )
 
@@ -98,13 +98,50 @@ begin
 
 process
 {
-	Foreach ($samAccountName in $samAccountNames)
-	{
-		$principal = 
-			New-Object System.Security.Principal.NTAccount($samAccountName)
+    Foreach ($samAccountName in $samAccountNames)
+    {
+        $principal = 
+            New-Object System.Security.Principal.NTAccount($samAccountName)
 
-		($principal.Translate([System.Security.Principal.SecurityIdentifier])).Value
-	}
+        ($principal.Translate([System.Security.Principal.SecurityIdentifier])).Value
+    }
+}
+
+}
+
+function Get-EffectiveGroupMembership
+{
+
+<#
+
+.SYNOPSIS
+
+Gets the effective group membership for the current user
+
+.DESCRIPTION
+
+n/a
+
+.EXAMPLE
+
+Get-EffectiveGroupMembership
+
+Gets the effective group membership for the current user
+
+#>
+
+begin
+{
+    Set-StrictMode -Version Latest
+}
+
+process
+{
+    $currentUser = 
+        [System.Security.Principal.WindowsIdentity]::GetCurrent()
+
+    $currentUser.Groups | % {$_.value} | Resolve-Sid
+
 }
 
 }
@@ -145,8 +182,8 @@ Access.Application
 
 Get-ChildItem HKLM:\Software\Classes -ea 0 |
 ? {
-	$_.PSChildName -match '^\w+\.\w+$' `
-	-and (Get-ItemProperty "$($_.PSPath)\CLSID" -ea 0) 
+    $_.PSChildName -match '^\w+\.\w+$' `
+    -and (Get-ItemProperty "$($_.PSPath)\CLSID" -ea 0) 
 } |
 ft PSChildName
 
