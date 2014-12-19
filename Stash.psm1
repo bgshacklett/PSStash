@@ -1,3 +1,5 @@
+Set-StrictMode -Version 2.0
+
 function Resolve-Sid
 {
 
@@ -187,4 +189,97 @@ Get-ChildItem HKLM:\Software\Classes -ea 0 |
 } |
 ft PSChildName
 
+}
+
+
+function New-GitIgnore
+{
+    [CmdletBinding()]
+    Param (
+        [Parameter(
+            Mandatory=$false,
+            Position=1,
+            HelpMessage="What types of files are you working with?"
+        )]
+        [ValidateSet("Vim")]
+        [String]$Type,
+
+        [Parameter(
+            Mandatory=$False,
+            Position=2,
+            HelpMessage="What is the path to the .gitignore file?"
+        )]
+        [String]$Path=".\.gitignore"
+    )
+
+
+
+    $GitIgnoreVim = 
+@"
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~    
+"@
+
+    $GitIgnoreContent = ""
+
+    If ($Type -Contains "Vim")
+    {
+        $GitIgnoreContent += $GitIgnoreVim
+    }
+
+
+
+    # Create the .gitignore file
+    New-Item -Type File -Path $Path
+
+    Add-Content -Value $GitIgnoreContent -Path $Path
+}
+
+
+function Add-GitIgnoreTypes
+{
+    [CmdletBinding()]
+    Param(
+        [Parameter(
+            Mandatory=$false,
+            Position=1
+        )]
+        [String]$Path = ".\.gitignore",
+        
+        [Parameter(
+            Mandatory=$false,
+            Position=2
+        )]
+        [ValidateSet("Vim")]
+        [String]$Type
+    )
+
+    If ($Path)
+    {
+        Test-Path $Path -ErrorAction Stop
+    }
+
+    $GitIgnoreVim = 
+@"
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~    
+"@
+
+    
+    $GitIgnoreContent = ""
+
+    If ($Type -Contains "Vim")
+    {
+        $GitIgnoreContent += $GitIgnoreVim
+    }
+    
+    Add-Content -Value $GitIgnoreContent -Path $Path
 }
