@@ -1,5 +1,36 @@
 Set-StrictMode -Version 2.0
 
+function New-UnmanagedServiceAccount
+{
+
+param(
+    ## The SamAccountName of the new service account.
+    [Parameter(Mandatory=$True)]
+    [string] $SamAccountName,
+
+    ## The Path to the new service account.
+    [Parameter(Mandatory=$False)]
+    [string] $Path = "CN=Users,$((Get-ADDomain).DistinguishedName)",
+
+    ## A short description of the new service account's usage.
+    [Parameter(Mandatory=$False)]
+    [string] $Description = ""
+)
+
+New-ADUser `
+    -SamAccountName $SamAccountName `
+    -Path $Path `
+    -PasswordNeverExpires $True `
+    -CannotChangePassword $True
+    -Description = $Description `
+    -PassThru |
+
+Set-ADAccountPassword `
+    -Reset
+}
+
+
+
 function Resolve-Sid
 {
 
