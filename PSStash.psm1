@@ -34,7 +34,6 @@ function ConvertTo-EncryptedString
 
 function New-Credential
 {
-    [CmdletBinding()]
     param(
         [Parameter(Mandatory=$True)]
         [string] $UserName,
