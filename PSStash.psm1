@@ -1,5 +1,68 @@
 Set-StrictMode -Version 2.0
 
+function ConvertTo-EncryptedString
+{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string] $ClearString,
+
+        [Parameter(Mandatory=$false)]
+        [byte[]] $Key
+    )
+    Begin
+    {
+    }
+
+    Process
+    {
+        $secureString =
+            ConvertTo-SecureString -String $ClearString -AsPlainText -Force
+
+        # If the key is null, it will be ignored.
+        $encryptedString =
+            ConvertFrom-SecureString -SecureString $secureString -Key $Key
+
+        $encryptedString
+    }
+
+    End
+    {
+    }
+}
+
+
+function New-Credential
+{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$True)]
+        [string] $UserName,
+
+        [Parameter(Mandatory=$True)]
+        [SecureString] $Password
+    )
+
+    $credentials =
+        New-Object System.Management.Automation.PSCredential (
+            $Username,
+            $Password
+        )
+
+    $credentials
+}
+
+
+function New-AesKey
+{
+    $key = New-Object byte[](32)
+    $rng = [System.Security.Cryptography.RNGCryptoServiceProvider]::Create()
+
+    $rng.GetBytes($key)
+
+    $key
+}
+
 function New-UnmanagedServiceAccount
 {
 
