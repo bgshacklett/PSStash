@@ -294,7 +294,7 @@ function New-GitIgnore
             Position=1,
             HelpMessage="What types of files are you working with?"
         )]
-        [ValidateSet("Vim")]
+        [ValidateSet("Vim","Go")]
         [String]$Type,
 
         [Parameter(
@@ -309,12 +309,52 @@ function New-GitIgnore
 
     $GitIgnoreVim = 
 @"
+##### Vim Files #####
+
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]
 *.un~
 Session.vim
 .netrwhist
 *~    
+
+
+"@
+
+    $GitIgnoreGo = 
+@"
+##### Golang #####
+
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+
+*.exe
+*.test
+*.prof
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# External packages folder
+vendor/
 "@
 
     $GitIgnoreContent = ""
@@ -322,6 +362,11 @@ Session.vim
     If ($Type -Contains "Vim")
     {
         $GitIgnoreContent += $GitIgnoreVim
+    }
+
+    If ($Type -Contains "Go")
+    {
+        $GitIgnoreContent += $GitIgnoreGo
     }
 
 
@@ -347,7 +392,7 @@ function Add-GitIgnoreTypes
             Mandatory=$false,
             Position=2
         )]
-        [ValidateSet("Vim")]
+        [ValidateSet("Vim,Go")]
         [String]$Type
     )
 
@@ -366,12 +411,52 @@ Session.vim
 *~    
 "@
 
+    $GitIgnoreGo = 
+@"
+##### Golang #####
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+
+*.exe
+*.test
+*.prof
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# External packages folder
+vendor/
+"@
+
     
     $GitIgnoreContent = ""
 
     If ($Type -Contains "Vim")
     {
         $GitIgnoreContent += $GitIgnoreVim
+    }
+
+    If ($Type -Contains "Go")
+    {
+        $GitIgnoreContent += $GitIgnoreGo
     }
     
     Add-Content -Value $GitIgnoreContent -Path $Path
