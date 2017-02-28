@@ -392,7 +392,7 @@ function Add-GitIgnoreTypes
             Mandatory=$false,
             Position=2
         )]
-        [ValidateSet("Vim,Go")]
+        [ValidateSet("Vim","Go")]
         [String]$Type
     )
 
